@@ -1,0 +1,58 @@
+{
+  "name": "@lukrlier/mcp-observatory-server",
+  "version": "1.0.0",
+  "description": "MCP server for querying MCP Observatory metrics",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "mcp-observatory-server": "dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "observability",
+    "monitoring",
+    "metrics",
+    "claude-desktop"
+  ],
+  "author": "LuKrlier",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuKrlier/mcp-observatory.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://github.com/LuKrlier/mcp-observatory#readme",
+  "bugs": {
+    "url": "https://github.com/LuKrlier/mcp-observatory/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

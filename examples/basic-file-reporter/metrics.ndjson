@@ -1,0 +1,32 @@
+{"toolName":"get_weather","parameters":{"city":"Paris"},"duration":145,"success":true,"id":"evt_1766162308298_hh3cok","timestamp":1766162308298,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"search_database","parameters":{"query":"users"},"duration":2340,"success":true,"id":"evt_1766162308299_o5nty","timestamp":1766162308299,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"get_weather","parameters":{"city":"London"},"duration":120,"success":true,"id":"evt_1766162308299_nm7gxp","timestamp":1766162308299,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"send_email","parameters":{"to":"invalid"},"duration":50,"success":false,"error":"Invalid email address","id":"evt_1766162308299_zgit2k","timestamp":1766162308299,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"search_database","parameters":{"query":"products"},"duration":1850,"success":true,"id":"evt_1766162308299_eowkod","timestamp":1766162308299,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"get_weather","parameters":{"city":"New York"},"duration":180,"success":true,"id":"evt_1766162308300_42v5wb","timestamp":1766162308300,"serverId":"srv_1766162308298_hp4gc3j"}
+{"errorType":"ValidationError","message":"Invalid city parameter","stack":"Error: Invalid city parameter\n    at validateCity (weather.ts:15)","id":"evt_1766162308300_nxd94","timestamp":1766162308300,"serverId":"srv_1766162308298_hp4gc3j"}
+{"errorType":"TimeoutError","message":"Database query timeout","stack":"Error: Database query timeout\n    at query (db.ts:42)","id":"evt_1766162308300_6t65ko","timestamp":1766162308300,"serverId":"srv_1766162308298_hp4gc3j"}
+{"toolName":"get_weather","parameters":{"city":"Paris"},"duration":145,"success":true,"id":"evt_1766238216878_gta59","timestamp":1766238216878,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"search_database","parameters":{"query":"users"},"duration":2340,"success":true,"id":"evt_1766238216879_g8y75n","timestamp":1766238216879,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"get_weather","parameters":{"city":"London"},"duration":120,"success":true,"id":"evt_1766238216880_8tqes9","timestamp":1766238216880,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"send_email","parameters":{"to":"invalid"},"duration":50,"success":false,"error":"Invalid email address","id":"evt_1766238216880_lzmlmv","timestamp":1766238216880,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"search_database","parameters":{"query":"products"},"duration":1850,"success":true,"id":"evt_1766238216882_r63cm","timestamp":1766238216882,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"get_weather","parameters":{"city":"New York"},"duration":180,"success":true,"id":"evt_1766238216883_3kd01","timestamp":1766238216883,"serverId":"srv_1766238216876_dl0ko8"}
+{"errorType":"ValidationError","message":"Invalid city parameter","stack":"Error: Invalid city parameter\n    at validateCity (weather.ts:15)","id":"evt_1766238216884_71eo1c","timestamp":1766238216884,"serverId":"srv_1766238216876_dl0ko8"}
+{"errorType":"TimeoutError","message":"Database query timeout","stack":"Error: Database query timeout\n    at query (db.ts:42)","id":"evt_1766238216885_pbk15","timestamp":1766238216885,"serverId":"srv_1766238216876_dl0ko8"}
+{"toolName":"get_weather","parameters":{"city":"Paris"},"duration":145,"success":true,"id":"evt_1766257760542_1racjj","timestamp":1766257760542,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"search_database","parameters":{"query":"users"},"duration":2340,"success":true,"id":"evt_1766257760543_e6yozl","timestamp":1766257760543,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"get_weather","parameters":{"city":"London"},"duration":120,"success":true,"id":"evt_1766257760543_v9pts7","timestamp":1766257760543,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"send_email","parameters":{"to":"invalid"},"duration":50,"success":false,"error":"Invalid email address","id":"evt_1766257760543_m1eyo","timestamp":1766257760543,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"search_database","parameters":{"query":"products"},"duration":1850,"success":true,"id":"evt_1766257760543_rbfaf","timestamp":1766257760543,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"get_weather","parameters":{"city":"New York"},"duration":180,"success":true,"id":"evt_1766257760544_3zrori","timestamp":1766257760544,"serverId":"srv_1766257760542_jaryhp"}
+{"errorType":"ValidationError","message":"Invalid city parameter","stack":"Error: Invalid city parameter\n    at validateCity (weather.ts:15)","id":"evt_1766257760544_e38gcn","timestamp":1766257760544,"serverId":"srv_1766257760542_jaryhp"}
+{"errorType":"TimeoutError","message":"Database query timeout","stack":"Error: Database query timeout\n    at query (db.ts:42)","id":"evt_1766257760544_x1gxc","timestamp":1766257760544,"serverId":"srv_1766257760542_jaryhp"}
+{"toolName":"get_weather","parameters":{"city":"Paris"},"duration":145,"success":true,"id":"evt_1766261501529_vn5tcj","timestamp":1766261501529,"serverId":"srv_1766261501528_t2uie"}
+{"toolName":"search_database","parameters":{"query":"users"},"duration":2340,"success":true,"id":"evt_1766261501529_qpp128","timestamp":1766261501529,"serverId":"srv_1766261501528_t2uie"}
+{"toolName":"get_weather","parameters":{"city":"London"},"duration":120,"success":true,"id":"evt_1766261501530_i6eopn","timestamp":1766261501530,"serverId":"srv_1766261501528_t2uie"}
+{"toolName":"send_email","parameters":{"to":"invalid"},"duration":50,"success":false,"error":"Invalid email address","id":"evt_1766261501530_xpc1wm","timestamp":1766261501530,"serverId":"srv_1766261501528_t2uie"}
+{"toolName":"search_database","parameters":{"query":"products"},"duration":1850,"success":true,"id":"evt_1766261501530_eqflh8","timestamp":1766261501530,"serverId":"srv_1766261501528_t2uie"}
+{"toolName":"get_weather","parameters":{"city":"New York"},"duration":180,"success":true,"id":"evt_1766261501531_w8lo8","timestamp":1766261501531,"serverId":"srv_1766261501528_t2uie"}
+{"errorType":"ValidationError","message":"Invalid city parameter","stack":"Error: Invalid city parameter\n    at validateCity (weather.ts:15)","metadata":{"toolName":"get_weather"},"id":"evt_1766261501531_a6pt2n","timestamp":1766261501531,"serverId":"srv_1766261501528_t2uie"}
+{"errorType":"TimeoutError","message":"Database query timeout","stack":"Error: Database query timeout\n    at query (db.ts:42)","metadata":{"toolName":"search_database"},"id":"evt_1766261501531_o1d4wj","timestamp":1766261501531,"serverId":"srv_1766261501528_t2uie"}

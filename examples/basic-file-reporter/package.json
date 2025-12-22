@@ -1,0 +1,19 @@
+{
+  "name": "basic-file-reporter-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Basic example using FileReporter and FileDataSource",
+  "scripts": {
+    "start": "tsx index.ts",
+    "dev": "tsx watch index.ts",
+    "test": "tsx test-mcp-server.ts"
+  },
+  "dependencies": {
+    "@lukrlier/mcp-observatory-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
+  }
+}

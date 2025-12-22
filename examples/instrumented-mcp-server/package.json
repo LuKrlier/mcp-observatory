@@ -1,0 +1,24 @@
+{
+  "name": "instrumented-mcp-server",
+  "version": "1.0.0",
+  "description": "Minimal MCP server with Observatory SDK instrumentation",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "instrumented-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@lukrlier/mcp-observatory-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+}

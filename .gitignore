@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+*.tgz
+
+# Environment
+.env
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+coverage/
+
+# Turbo
+.turbo/
+
+# TypeScript
+*.tsbuildinfo
+
+# Metrics
+*.ndjson
+!examples/**/*.ndjson
+
+# Temporary
+*.tmp
+.cache/
+
+# AI/Claude
+claudedocs/
+docs/
+tasks/
+.claude/
+.serena/
+CLAUDE.md
