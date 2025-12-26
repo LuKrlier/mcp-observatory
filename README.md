@@ -250,10 +250,17 @@ mcp-observatory-server --cloud sk_xxx
 The MCP Server exposes 5 tools that Claude can use:
 
 1. **get_server_metrics** - Overall server health and performance
+   - Optional `server_id` - if omitted, returns aggregated metrics for all servers
 2. **get_tool_stats** - Detailed statistics for a specific tool
+   - Optional `server_id` - if omitted, returns stats across all servers
 3. **get_error_logs** - Recent errors for debugging
+   - Optional `server_id` - if omitted, returns errors from all servers
 4. **get_cost_estimate** - Estimated API costs
+   - Optional `server_id` - if omitted, returns costs for all servers
 5. **analyze_performance** - AI-powered performance insights
+   - Optional `server_id` - if omitted, analyzes all servers
+
+**Note**: All tools support querying without `server_id` to get aggregated metrics across all your MCP servers.
 
 ## 🧪 Development Status
 
@@ -370,6 +377,19 @@ Yes! Each server should:
 1. Write to a unique metrics file (e.g., `server1.ndjson`, `server2.ndjson`)
 2. Have a unique `serverId` in the SDK configuration
 3. Be configured separately in `claude_desktop_config.json`
+
+**New in v1.0.1**: You can now query metrics across all servers without specifying a `server_id`:
+
+```
+User: "What are my overall server metrics?"
+Claude: Calls get_server_metrics() without server_id
+        Returns aggregated metrics for all servers
+```
+
+This is useful for:
+- Getting an overview of all your MCP servers at once
+- Comparing performance across servers
+- Identifying which server has issues
 
 ## 🤝 Contributing
 

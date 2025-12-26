@@ -57,13 +57,14 @@ class ObservatoryServer {
     const tools: Tool[] = [
       {
         name: 'get_server_metrics',
-        description: 'Get real-time performance metrics for an MCP server',
+        description:
+          'Get real-time performance metrics for an MCP server. If server_id is not provided, returns aggregated metrics for all servers.',
         inputSchema: {
           type: 'object',
           properties: {
             server_id: {
               type: 'string',
-              description: 'MCP server identifier',
+              description: 'MCP server identifier (optional - if not provided, returns all servers)',
             },
             time_range: {
               type: 'string',
@@ -72,18 +73,20 @@ class ObservatoryServer {
               default: '1h',
             },
           },
-          required: ['server_id'],
+          required: [],
         },
       },
       {
         name: 'get_tool_stats',
-        description: 'Get detailed statistics for a specific tool',
+        description:
+          'Get detailed statistics for a specific tool. If server_id is not provided, returns stats for this tool across all servers.',
         inputSchema: {
           type: 'object',
           properties: {
             server_id: {
               type: 'string',
-              description: 'MCP server identifier',
+              description:
+                'MCP server identifier (optional - if not provided, returns stats across all servers)',
             },
             tool_name: {
               type: 'string',
@@ -96,18 +99,19 @@ class ObservatoryServer {
               default: '1h',
             },
           },
-          required: ['server_id', 'tool_name'],
+          required: ['tool_name'],
         },
       },
       {
         name: 'get_error_logs',
-        description: 'Retrieve recent error logs for debugging',
+        description:
+          'Retrieve recent error logs for debugging. If server_id is not provided, returns errors from all servers.',
         inputSchema: {
           type: 'object',
           properties: {
             server_id: {
               type: 'string',
-              description: 'MCP server identifier',
+              description: 'MCP server identifier (optional - if not provided, returns all servers)',
             },
             limit: {
               type: 'number',
@@ -122,18 +126,19 @@ class ObservatoryServer {
               default: 'all',
             },
           },
-          required: ['server_id'],
+          required: [],
         },
       },
       {
         name: 'get_cost_estimate',
-        description: 'Calculate estimated API costs for a server',
+        description:
+          'Calculate estimated API costs for a server. If server_id is not provided, returns costs for all servers.',
         inputSchema: {
           type: 'object',
           properties: {
             server_id: {
               type: 'string',
-              description: 'MCP server identifier',
+              description: 'MCP server identifier (optional - if not provided, returns all servers)',
             },
             time_range: {
               type: 'string',
@@ -142,18 +147,19 @@ class ObservatoryServer {
               default: '24h',
             },
           },
-          required: ['server_id'],
+          required: [],
         },
       },
       {
         name: 'analyze_performance',
-        description: 'AI-powered performance analysis with actionable recommendations',
+        description:
+          'AI-powered performance analysis with actionable recommendations. If server_id is not provided, analyzes all servers.',
         inputSchema: {
           type: 'object',
           properties: {
             server_id: {
               type: 'string',
-              description: 'MCP server identifier',
+              description: 'MCP server identifier (optional - if not provided, analyzes all servers)',
             },
             time_range: {
               type: 'string',
@@ -162,7 +168,7 @@ class ObservatoryServer {
               default: '24h',
             },
           },
-          required: ['server_id'],
+          required: [],
         },
       },
     ];
