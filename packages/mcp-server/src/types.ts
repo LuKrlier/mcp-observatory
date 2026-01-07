@@ -13,9 +13,9 @@ export const SeveritySchema = z.enum(['all', 'error', 'critical']);
 export type Severity = z.infer<typeof SeveritySchema>;
 
 /**
- * Server metrics response
+ * Metrics for a single server
  */
-export const ServerMetricsSchema = z.object({
+export const SingleServerMetricsSchema = z.object({
   server_id: z.string(),
   time_range: TimeRangeSchema,
   metrics: z.object({
@@ -35,25 +35,78 @@ export const ServerMetricsSchema = z.object({
     ),
   }),
 });
+
+/**
+ * Server metrics response (single server or all servers)
+ */
+export const ServerMetricsSchema = z.union([
+  SingleServerMetricsSchema,
+  z.object({
+    server_id: z.literal('all'),
+    time_range: TimeRangeSchema,
+    servers: z.array(SingleServerMetricsSchema),
+    aggregated_metrics: z.object({
+      total_calls: z.number(),
+      success_rate: z.number(),
+      avg_duration_ms: z.number(),
+      p50_duration_ms: z.number(),
+      p95_duration_ms: z.number(),
+      p99_duration_ms: z.number(),
+      error_rate: z.number(),
+      total_servers: z.number(),
+    }),
+  }),
+]);
 export type ServerMetrics = z.infer<typeof ServerMetricsSchema>;
 
 /**
- * Tool statistics response
+ * Tool statistics response (single server or all servers)
  */
-export const ToolStatsSchema = z.object({
-  server_id: z.string(),
-  tool_name: z.string(),
-  time_range: TimeRangeSchema,
-  stats: z.object({
-    total_calls: z.number(),
-    success_count: z.number(),
-    error_count: z.number(),
-    avg_duration_ms: z.number(),
-    p50_duration_ms: z.number(),
-    p95_duration_ms: z.number(),
-    p99_duration_ms: z.number(),
+export const ToolStatsSchema = z.union([
+  z.object({
+    server_id: z.string(),
+    tool_name: z.string(),
+    time_range: TimeRangeSchema,
+    stats: z.object({
+      total_calls: z.number(),
+      success_count: z.number(),
+      error_count: z.number(),
+      avg_duration_ms: z.number(),
+      p50_duration_ms: z.number(),
+      p95_duration_ms: z.number(),
+      p99_duration_ms: z.number(),
+    }),
   }),
-});
+  z.object({
+    server_id: z.literal('all'),
+    tool_name: z.string(),
+    time_range: TimeRangeSchema,
+    servers: z.array(
+      z.object({
+        server_id: z.string(),
+        stats: z.object({
+          total_calls: z.number(),
+          success_count: z.number(),
+          error_count: z.number(),
+          avg_duration_ms: z.number(),
+          p50_duration_ms: z.number(),
+          p95_duration_ms: z.number(),
+          p99_duration_ms: z.number(),
+        }),
+      })
+    ),
+    aggregated_stats: z.object({
+      total_calls: z.number(),
+      success_count: z.number(),
+      error_count: z.number(),
+      avg_duration_ms: z.number(),
+      p50_duration_ms: z.number(),
+      p95_duration_ms: z.number(),
+      p99_duration_ms: z.number(),
+      total_servers: z.number(),
+    }),
+  }),
+]);
 export type ToolStats = z.infer<typeof ToolStatsSchema>;
 
 /**
@@ -71,29 +124,62 @@ export const ErrorLogSchema = z.object({
 export type ErrorLog = z.infer<typeof ErrorLogSchema>;
 
 /**
- * Error logs response
+ * Error logs response (single server or all servers)
  */
-export const ErrorLogsResponseSchema = z.object({
-  server_id: z.string(),
-  errors: z.array(ErrorLogSchema),
-  total_count: z.number(),
-  time_range: z.string(),
-});
+export const ErrorLogsResponseSchema = z.union([
+  z.object({
+    server_id: z.string(),
+    errors: z.array(ErrorLogSchema),
+    total_count: z.number(),
+    time_range: z.string(),
+  }),
+  z.object({
+    server_id: z.literal('all'),
+    servers: z.array(
+      z.object({
+        server_id: z.string(),
+        errors: z.array(ErrorLogSchema),
+        total_count: z.number(),
+      })
+    ),
+    total_count: z.number(),
+    time_range: z.string(),
+  }),
+]);
 export type ErrorLogsResponse = z.infer<typeof ErrorLogsResponseSchema>;
 
 /**
- * Cost estimate response
+ * Cost estimate response (single server or all servers)
  */
-export const CostEstimateSchema = z.object({
-  server_id: z.string(),
-  time_range: TimeRangeSchema,
-  estimated_cost_usd: z.number(),
-  breakdown: z.object({
-    tool_calls: z.number(),
-    cost_per_call: z.number(),
+export const CostEstimateSchema = z.union([
+  z.object({
+    server_id: z.string(),
+    time_range: TimeRangeSchema,
+    estimated_cost_usd: z.number(),
+    breakdown: z.object({
+      tool_calls: z.number(),
+      cost_per_call: z.number(),
+      total_calls: z.number(),
+    }),
+  }),
+  z.object({
+    server_id: z.literal('all'),
+    time_range: TimeRangeSchema,
+    servers: z.array(
+      z.object({
+        server_id: z.string(),
+        estimated_cost_usd: z.number(),
+        breakdown: z.object({
+          tool_calls: z.number(),
+          cost_per_call: z.number(),
+          total_calls: z.number(),
+        }),
+      })
+    ),
+    total_estimated_cost_usd: z.number(),
     total_calls: z.number(),
   }),
-});
+]);
 export type CostEstimate = z.infer<typeof CostEstimateSchema>;
 
 /**
@@ -109,15 +195,32 @@ export const PerformanceInsightSchema = z.object({
 export type PerformanceInsight = z.infer<typeof PerformanceInsightSchema>;
 
 /**
- * Performance analysis response
+ * Performance analysis response (single server or all servers)
  */
-export const PerformanceAnalysisSchema = z.object({
-  server_id: z.string(),
-  time_range: TimeRangeSchema,
-  insights: z.array(PerformanceInsightSchema),
-  health_score: z.number().min(0).max(1),
-  trend: z.enum(['improving', 'stable', 'degrading']),
-});
+export const PerformanceAnalysisSchema = z.union([
+  z.object({
+    server_id: z.string(),
+    time_range: TimeRangeSchema,
+    insights: z.array(PerformanceInsightSchema),
+    health_score: z.number().min(0).max(1),
+    trend: z.enum(['improving', 'stable', 'degrading']),
+  }),
+  z.object({
+    server_id: z.literal('all'),
+    time_range: TimeRangeSchema,
+    servers: z.array(
+      z.object({
+        server_id: z.string(),
+        insights: z.array(PerformanceInsightSchema),
+        health_score: z.number().min(0).max(1),
+        trend: z.enum(['improving', 'stable', 'degrading']),
+      })
+    ),
+    overall_health_score: z.number().min(0).max(1),
+    overall_trend: z.enum(['improving', 'stable', 'degrading']),
+    critical_insights: z.array(PerformanceInsightSchema),
+  }),
+]);
 export type PerformanceAnalysis = z.infer<typeof PerformanceAnalysisSchema>;
 
 /**

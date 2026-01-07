@@ -162,13 +162,15 @@ mcp-observatory-server --cloud sk_xxx
 
 ## Available Tools
 
+**New in v1.0.1**: All tools now support optional `server_id` parameter. When omitted, they return aggregated metrics across all your MCP servers.
+
 ### 1. `get_server_metrics`
 
 Get real-time performance metrics for an MCP server.
 
 **Parameters:**
 
-- `server_id` (required): MCP server identifier
+- `server_id` (optional): MCP server identifier - if not provided, returns aggregated metrics for all servers
 - `time_range` (optional): `5m`, `1h`, `24h`, `7d`, `30d` (default: `1h`)
 
 **Returns:**
@@ -206,7 +208,7 @@ Get detailed statistics for a specific tool.
 
 **Parameters:**
 
-- `server_id` (required): MCP server identifier
+- `server_id` (optional): MCP server identifier - if not provided, returns stats across all servers
 - `tool_name` (required): Name of the tool to analyze
 - `time_range` (optional): Time range (default: `1h`)
 
@@ -239,8 +241,9 @@ Retrieve recent error logs for debugging.
 
 **Parameters:**
 
-- `server_id` (required): MCP server identifier
+- `server_id` (optional): MCP server identifier - if not provided, returns errors from all servers
 - `limit` (optional): Maximum errors to return (default: 50, max: 100)
+- `severity` (optional): Filter by severity level - `all`, `error`, `critical` (default: `all`)
 
 **Returns:**
 
@@ -272,7 +275,7 @@ Calculate estimated API costs for a server.
 
 **Parameters:**
 
-- `server_id` (required): MCP server identifier
+- `server_id` (optional): MCP server identifier - if not provided, returns costs for all servers
 - `time_range` (optional): Time range (default: `24h`)
 
 **Returns:**
@@ -299,7 +302,7 @@ AI-powered performance analysis with actionable recommendations.
 
 **Parameters:**
 
-- `server_id` (required): MCP server identifier
+- `server_id` (optional): MCP server identifier - if not provided, analyzes all servers
 - `time_range` (optional): Time range (default: `24h`)
 
 **Returns:**
@@ -432,10 +435,25 @@ const server = new ObservatoryServer({ dataSourceConfig: {...} }, dataSource);
 
 ### No metrics returned
 
-1. Verify `server_id` matches SDK configuration
+1. Verify `server_id` matches SDK configuration (or omit to query all servers)
 2. Check time range is valid
 3. Ensure events have been written to file
 4. Check file contains valid NDJSON
+
+### Querying multiple servers
+
+**New in v1.0.1**: You can monitor multiple MCP servers and query them all at once without specifying `server_id`:
+
+```
+User: "What are my overall server metrics?"
+Claude: Calls get_server_metrics() without server_id
+        Returns aggregated metrics + per-server breakdown
+```
+
+This is useful for:
+- Getting an overview of all your MCP servers
+- Comparing performance across different servers
+- Identifying which server has issues
 
 ### Tool errors
 

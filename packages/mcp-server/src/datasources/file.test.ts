@@ -808,4 +808,310 @@ this is not valid json
       await expect(dataSource.shutdown()).resolves.not.toThrow();
     });
   });
+
+  describe('Multi-Server Support (Optional ServerId)', () => {
+    beforeEach(async () => {
+      const now = Date.now();
+      const events = [
+        // Server 1 events
+        {
+          id: 'evt_1',
+          timestamp: now,
+          serverId: 'srv_1',
+          toolName: 'tool_a',
+          duration: 100,
+          success: true,
+        },
+        {
+          id: 'evt_2',
+          timestamp: now,
+          serverId: 'srv_1',
+          toolName: 'tool_b',
+          duration: 200,
+          success: true,
+        },
+        {
+          id: 'evt_3',
+          timestamp: now,
+          serverId: 'srv_1',
+          toolName: 'tool_a',
+          duration: 150,
+          success: false,
+          error: 'Error 1',
+        },
+        // Server 2 events
+        {
+          id: 'evt_4',
+          timestamp: now,
+          serverId: 'srv_2',
+          toolName: 'tool_a',
+          duration: 300,
+          success: true,
+        },
+        {
+          id: 'evt_5',
+          timestamp: now,
+          serverId: 'srv_2',
+          toolName: 'tool_c',
+          duration: 400,
+          success: true,
+        },
+        // Server 3 events
+        {
+          id: 'evt_6',
+          timestamp: now,
+          serverId: 'srv_3',
+          toolName: 'tool_a',
+          duration: 50,
+          success: true,
+        },
+        // Error events for different servers
+        {
+          id: 'err_1',
+          timestamp: now,
+          serverId: 'srv_1',
+          errorType: 'ValidationError',
+          message: 'Invalid input srv_1',
+          stack: 'Error...',
+        },
+        {
+          id: 'err_2',
+          timestamp: now,
+          serverId: 'srv_2',
+          errorType: 'TimeoutError',
+          message: 'Timeout srv_2',
+          stack: 'Error...',
+        },
+      ];
+
+      const ndjson = events.map((e) => JSON.stringify(e)).join('\n') + '\n';
+      await fs.writeFile(tempFile, ndjson);
+
+      dataSource = new FileDataSource({ filePath: tempFile });
+    });
+
+    describe('getServerMetrics without serverId', () => {
+      it('should return aggregated metrics for all servers', async () => {
+        const result = await dataSource.getServerMetrics({
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.servers).toHaveLength(3);
+        expect(result.aggregated_metrics.total_servers).toBe(3);
+        expect(result.aggregated_metrics.total_calls).toBe(6);
+      });
+
+      it('should include per-server breakdown', async () => {
+        const result = await dataSource.getServerMetrics({
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+
+        const srv1 = result.servers.find((s) => s.server_id === 'srv_1');
+        const srv2 = result.servers.find((s) => s.server_id === 'srv_2');
+        const srv3 = result.servers.find((s) => s.server_id === 'srv_3');
+
+        expect(srv1).toBeDefined();
+        expect(srv2).toBeDefined();
+        expect(srv3).toBeDefined();
+
+        expect(srv1?.metrics.total_calls).toBe(3);
+        expect(srv2?.metrics.total_calls).toBe(2);
+        expect(srv3?.metrics.total_calls).toBe(1);
+      });
+
+      it('should calculate correct aggregated success rate', async () => {
+        const result = await dataSource.getServerMetrics({
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+        // 5 success out of 6 total = 0.833...
+        expect(result.aggregated_metrics.success_rate).toBeCloseTo(0.833, 2);
+        expect(result.aggregated_metrics.error_rate).toBeCloseTo(0.167, 2);
+      });
+
+      it('should calculate correct aggregated durations', async () => {
+        const result = await dataSource.getServerMetrics({
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+        // Average: (100 + 200 + 150 + 300 + 400 + 50) / 6 = 200
+        expect(result.aggregated_metrics.avg_duration_ms).toBe(200);
+      });
+    });
+
+    describe('getToolStats without serverId', () => {
+      it('should return stats across all servers for a tool', async () => {
+        const result = await dataSource.getToolStats({
+          toolName: 'tool_a',
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.tool_name).toBe('tool_a');
+        expect(result.servers).toHaveLength(3);
+        expect(result.aggregated_stats.total_servers).toBe(3);
+        // tool_a appears in srv_1 (2 times), srv_2 (1 time), srv_3 (1 time) = 4 total
+        expect(result.aggregated_stats.total_calls).toBe(4);
+      });
+
+      it('should include per-server breakdown for tool', async () => {
+        const result = await dataSource.getToolStats({
+          toolName: 'tool_a',
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+
+        const srv1Stats = result.servers.find((s) => s.server_id === 'srv_1');
+        const srv2Stats = result.servers.find((s) => s.server_id === 'srv_2');
+        const srv3Stats = result.servers.find((s) => s.server_id === 'srv_3');
+
+        expect(srv1Stats?.stats.total_calls).toBe(2);
+        expect(srv2Stats?.stats.total_calls).toBe(1);
+        expect(srv3Stats?.stats.total_calls).toBe(1);
+      });
+
+      it('should calculate aggregated success/error counts', async () => {
+        const result = await dataSource.getToolStats({
+          toolName: 'tool_a',
+          timeRange: '1h',
+        });
+
+        expect(result.server_id).toBe('all');
+        // srv_1: 1 success, 1 error; srv_2: 1 success; srv_3: 1 success = 3 success, 1 error
+        expect(result.aggregated_stats.success_count).toBe(3);
+        expect(result.aggregated_stats.error_count).toBe(1);
+      });
+    });
+
+    describe('getErrorLogs without serverId', () => {
+      it('should return errors from all servers', async () => {
+        const result = await dataSource.getErrorLogs({
+          limit: 10,
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.servers).toHaveLength(2); // srv_1 and srv_2 have errors
+        expect(result.total_count).toBe(2);
+      });
+
+      it('should include per-server error breakdown', async () => {
+        const result = await dataSource.getErrorLogs({
+          limit: 10,
+        });
+
+        expect(result.server_id).toBe('all');
+
+        const srv1Errors = result.servers.find((s) => s.server_id === 'srv_1');
+        const srv2Errors = result.servers.find((s) => s.server_id === 'srv_2');
+
+        expect(srv1Errors).toBeDefined();
+        expect(srv2Errors).toBeDefined();
+
+        expect(srv1Errors?.errors).toHaveLength(1);
+        expect(srv2Errors?.errors).toHaveLength(1);
+
+        expect(srv1Errors?.errors[0].error_type).toBe('ValidationError');
+        expect(srv2Errors?.errors[0].error_type).toBe('TimeoutError');
+      });
+
+      it('should respect limit across all servers', async () => {
+        const result = await dataSource.getErrorLogs({
+          limit: 1,
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.total_count).toBe(2);
+        // Should limit total errors returned, not per server
+        const totalErrors = result.servers.reduce(
+          (sum, s) => sum + s.errors.length,
+          0
+        );
+        expect(totalErrors).toBeLessThanOrEqual(1);
+      });
+    });
+
+    describe('getCostEstimate without serverId', () => {
+      it('should return cost estimate for all servers', async () => {
+        const result = await dataSource.getCostEstimate({
+          timeRange: '24h',
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.servers).toHaveLength(3);
+        expect(result.total_calls).toBe(6);
+        // 6 calls * 0.001 = 0.006
+        expect(result.total_estimated_cost_usd).toBe(0.006);
+      });
+
+      it('should include per-server cost breakdown', async () => {
+        const result = await dataSource.getCostEstimate({
+          timeRange: '24h',
+        });
+
+        expect(result.server_id).toBe('all');
+
+        const srv1Cost = result.servers.find((s) => s.server_id === 'srv_1');
+        const srv2Cost = result.servers.find((s) => s.server_id === 'srv_2');
+        const srv3Cost = result.servers.find((s) => s.server_id === 'srv_3');
+
+        expect(srv1Cost?.breakdown.total_calls).toBe(3);
+        expect(srv1Cost?.estimated_cost_usd).toBe(0.003);
+
+        expect(srv2Cost?.breakdown.total_calls).toBe(2);
+        expect(srv2Cost?.estimated_cost_usd).toBe(0.002);
+
+        expect(srv3Cost?.breakdown.total_calls).toBe(1);
+        expect(srv3Cost?.estimated_cost_usd).toBe(0.001);
+      });
+    });
+
+    describe('analyzePerformance without serverId', () => {
+      it('should return performance analysis for all servers', async () => {
+        const result = await dataSource.analyzePerformance({
+          timeRange: '24h',
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.servers).toHaveLength(3);
+        expect(result.overall_health_score).toBeGreaterThan(0);
+        expect(result.overall_health_score).toBeLessThanOrEqual(1);
+      });
+
+      it('should include per-server performance analysis', async () => {
+        const result = await dataSource.analyzePerformance({
+          timeRange: '24h',
+        });
+
+        expect(result.server_id).toBe('all');
+
+        const srv1Analysis = result.servers.find((s) => s.server_id === 'srv_1');
+        const srv2Analysis = result.servers.find((s) => s.server_id === 'srv_2');
+        const srv3Analysis = result.servers.find((s) => s.server_id === 'srv_3');
+
+        expect(srv1Analysis).toBeDefined();
+        expect(srv2Analysis).toBeDefined();
+        expect(srv3Analysis).toBeDefined();
+
+        expect(srv1Analysis?.health_score).toBeDefined();
+        expect(srv2Analysis?.health_score).toBeDefined();
+        expect(srv3Analysis?.health_score).toBeDefined();
+      });
+
+      it('should identify critical insights across all servers', async () => {
+        const result = await dataSource.analyzePerformance({
+          timeRange: '24h',
+        });
+
+        expect(result.server_id).toBe('all');
+        expect(result.critical_insights).toBeDefined();
+        expect(Array.isArray(result.critical_insights)).toBe(true);
+      });
+    });
+  });
 });

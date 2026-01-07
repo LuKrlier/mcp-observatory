@@ -12,7 +12,7 @@ import type {
  * Query parameters for metrics
  */
 export interface MetricsQueryParams {
-  serverId: string;
+  serverId?: string;
   timeRange?: TimeRange;
 }
 
@@ -27,7 +27,7 @@ export interface ToolStatsQueryParams extends MetricsQueryParams {
  * Query parameters for error logs
  */
 export interface ErrorLogsQueryParams {
-  serverId: string;
+  serverId?: string;
   limit?: number;
   severity?: Severity;
 }
