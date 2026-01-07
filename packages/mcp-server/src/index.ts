@@ -37,7 +37,7 @@ class ObservatoryServer {
     this.server = new Server(
       {
         name: 'mcp-observatory',
-        version: '1.0.0',
+        version: '1.0.1',
       },
       {
         capabilities: {
@@ -280,7 +280,7 @@ class ObservatoryServer {
  */
 function showHelp(): void {
   console.log(`
-MCP Observatory Server v1.0.0
+MCP Observatory Server v1.0.1
 
 Usage:
   mcp-observatory-server [options]
@@ -315,7 +315,7 @@ Documentation: https://github.com/LuKrlier/mcp-observatory#readme
  * Display version
  */
 function showVersion(): void {
-  console.log('1.0.0');
+  console.log('1.0.1');
   process.exit(0);
 }
 
